@@ -32,6 +32,17 @@ function App() {
       }
     }
   });
+	window.addEventListener('click', (event) => {
+		console.log(event)
+		// 检查点击目标是否为链接
+		if (event.target.tagName === 'A') {
+				const href = event.target.href;
+				// 发送消息到插件代码
+				vscode.postMessage({ command: 'openLink', href });
+				// 阻止默认行为
+				event.preventDefault();
+		}
+	});
 
   return (
     <main className="w-full h-full">

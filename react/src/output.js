@@ -18,16 +18,20 @@ if(!fs.existsSync(CopyFilePath)){
 getFiles(OriginFilePath,CopyFilePath)
 function getFiles(OriginFilePath){
 //读取newFile文件夹下的文件
-  fs.readdir(OriginFilePath,{withFileTypes:true},(err,files)=>{
+  fs.readdir(OriginFilePath,{withFileTypes:true}, async (err,files)=>{
       for(let file of files){
       	//判断是否是文件夹，不是则直接复制文件到newFile中
         if(!file.isDirectory()){
-					if(/main(\.[1-9A-Za-z]{0,}){0,}\.(js|css)$/.test(file.name)) {
-						const targetFileName = file.name.replace(/(main)(\.[1-9A-Za-z]{0,}){0,}(\.)(js|css)$/, '$1$3$4')
+					if(/main(\.[0-9A-Za-z]{0,}){0,}\.(js|css)$/.test(file.name)) {
+						const targetFileName = file.name.replace(/(main)(\.[0-9A-Za-z]{0,}){0,}(\.)(js|css)$/, '$1$3$4')
 						//获取旧文件夹中要复制的文件
 						const OriginFile = path.resolve(OriginFilePath,file.name);
 						//获取新文件夹中复制的地方
 						const CopyFile = path.resolve(CopyFilePath, targetFileName);
+						console.log(CopyFile)
+						if(fs.existsSync(CopyFile)) {
+							await fs.unlink(CopyFile, (err) => {});
+						}
 						//将文件从旧文件夹复制到新文件夹中
 						fs.copyFileSync(OriginFile,CopyFile);
 					}
